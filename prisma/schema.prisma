@@ -12,3 +12,59 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Student {
+  id                    String         @id @default(uuid())
+  name                  String         @db.VarChar(100)
+  email                 String         @db.VarChar(255)
+  graduationYear        Int
+  clubs                 Club[]         @relation("StudentClubs")
+  officerOf             Club[]         @relation("ClubOfficers")
+  posteredAnnouncements Announcement[]
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+}
+
+model Club {
+  id             String         @id @default(uuid())
+  name           String         @db.VarChar(150)
+  description    String         @db.VarChar(2000)
+  roomNumber     String         @db.VarChar(20)
+  photoUrl       String         @db.VarChar(2048)
+  startDate      DateTime
+  Frequency      Int            // next meeting is in 1 week, 2 weeks, etc.
+  Weekdays       String[]       // e.g., ["Monday", "Wednesday"]
+  // every frequency weeks on these weekdays there is a meeting
+  links          String[]       // URLs - validate max 2048 chars in app
+  location       Int
+  tags           String[]       // validate max 50 chars per tag in app
+  teacherAdvisor String?        @db.VarChar(100)
+  // announcements made by officers, and pertain to clubs
+  announcements  Announcement[]
+  members        Student[]      @relation("StudentClubs")
+  officers       Student[]      @relation("ClubOfficers")
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  // officers are a subset of members, ie all officers must be members
+}
+
+// TODO: figure out if these are needed, admins edit everything
+model Admin {
+  id        String   @id @default(uuid())
+  email     String   @unique @db.VarChar(255)
+  name      String   @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String   @db.VarChar(200)
+  content   String   @db.VarChar(5000)
+  poster    Student  @relation(fields: [posterId], references: [id])
+  club      Club     @relation(fields: [clubId], references: [id])
+  clubId    String
+  posterId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
