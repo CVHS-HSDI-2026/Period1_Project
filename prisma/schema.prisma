@@ -13,58 +13,134 @@ datasource db {
   provider = "postgresql"
 }
 
+// ===========================================
+// AUTH.JS MODELS
+// ===========================================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique @db.VarChar(255)
+  password      String    @db.VarChar(255) // bcrypt hashed
+  emailVerified DateTime?
+  name          String?   @db.VarChar(100)
+  image         String?   @db.VarChar(2048)
+
+  // Profile relations (one-to-one)
+  student Student?
+  admin   Admin?
+
+  // Auth.js relations
+  accounts Account[]
+  sessions Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ===========================================
+// DOMAIN MODELS
+// ===========================================
+
 model Student {
-  id                    String         @id @default(uuid())
-  name                  String         @db.VarChar(100)
-  email                 String         @db.VarChar(255)
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   graduationYear        Int
   clubs                 Club[]         @relation("StudentClubs")
   officerOf             Club[]         @relation("ClubOfficers")
   posteredAnnouncements Announcement[]
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Club {
-  id             String         @id @default(uuid())
-  name           String         @db.VarChar(150)
-  description    String         @db.VarChar(2000)
-  roomNumber     String         @db.VarChar(20)
-  photoUrl       String         @db.VarChar(2048)
+  id             String   @id @default(uuid())
+  name           String   @db.VarChar(150)
+  description    String   @db.VarChar(2000)
+  roomNumber     String   @db.VarChar(20)
+  photoUrl       String   @db.VarChar(2048)
   startDate      DateTime
-  Frequency      Int            // next meeting is in 1 week, 2 weeks, etc.
-  Weekdays       String[]       // e.g., ["Monday", "Wednesday"]
+  Frequency      Int // next meeting is in 1 week, 2 weeks, etc.
+  Weekdays       String[] // e.g., ["Monday", "Wednesday"]
   // every frequency weeks on these weekdays there is a meeting
-  links          String[]       // URLs - validate max 2048 chars in app
+  links          String[] // URLs - validate max 2048 chars in app
   location       Int
-  tags           String[]       // validate max 50 chars per tag in app
-  teacherAdvisor String?        @db.VarChar(100)
+  tags           String[] // validate max 50 chars per tag in app
+  teacherAdvisor String?  @db.VarChar(100)
+
   // announcements made by officers, and pertain to clubs
-  announcements  Announcement[]
-  members        Student[]      @relation("StudentClubs")
-  officers       Student[]      @relation("ClubOfficers")
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  announcements Announcement[]
+  members       Student[]      @relation("StudentClubs")
+  officers      Student[]      @relation("ClubOfficers")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   // officers are a subset of members, ie all officers must be members
 }
 
-// TODO: figure out if these are needed, admins edit everything
 model Admin {
-  id        String   @id @default(uuid())
-  email     String   @unique @db.VarChar(255)
-  name      String   @db.VarChar(100)
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Announcement {
-  id        String   @id @default(uuid())
-  title     String   @db.VarChar(200)
-  content   String   @db.VarChar(5000)
-  poster    Student  @relation(fields: [posterId], references: [id])
-  club      Club     @relation(fields: [clubId], references: [id])
-  clubId    String
-  posterId  String
+  id       String   @id @default(uuid())
+  title    String   @db.VarChar(200)
+  content  String   @db.VarChar(5000)
+  images   String[] @db.VarChar(2048) // urls
+  poster   Student  @relation(fields: [posterId], references: [id])
+  club     Club     @relation(fields: [clubId], references: [id])
+  clubId   String
+  posterId String
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
