@@ -20,6 +20,20 @@ export async function GET(request: NextRequest) {
             orderBy: {
                 createdAt: "desc",
             },
+            select: {
+                // get the id, title and content, images, and club name/room number
+                id: true,
+                title: true,
+                content: true,
+                images: true,
+                club: {
+                    select: {
+                        name: true,
+                        roomNumber: true,
+                    },
+                },
+
+            },
             take: amountNumber,
         });
 

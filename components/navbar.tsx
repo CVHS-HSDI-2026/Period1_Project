@@ -8,8 +8,8 @@ import { ChevronDown, LogOut, User, Users } from "lucide-react";
 
 const AVATAR_COLORS = [
   "#E53E3E", "#DD6B20", "#D69E2E", "#38A169",
-  "#319795", "#3182CE", "#5A67D8", "#805AD5",
-  "#D53F8C", "#E53E3E",
+  "#319795", "#38B2AC", "#805AD5",
+  "#D53F8C", "#E53E3E", "#ED8936",
 ];
 
 function getColorFromName(name: string) {
@@ -26,7 +26,7 @@ export default function Navbar() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const avatarColor = useMemo(() => {
-    return session?.user?.name ? getColorFromName(session.user.name) : "#3182CE";
+    return session?.user?.name ? getColorFromName(session.user.name) : "#38A169";
   }, [session?.user?.name]);
 
   const initial = session?.user?.name?.charAt(0).toUpperCase() ?? "?";
@@ -42,26 +42,23 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-[#89CFF0] text-gray-900 h-14 flex items-center px-6 justify-between">
-      {/* Left: Logo + Brand + Nav Links */}
-      <div className="flex items-center gap-6">
+    <nav className="bg-[#001f3f] text-white h-14 flex items-center px-6 justify-between">
+      {/* Left: Logo */}
+      <div className="flex items-center">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.png" alt="Club Falcon" width={32} height={32} unoptimized />
           <span className="font-semibold text-lg">Club Falcon</span>
         </Link>
-
-        <div className="flex items-center gap-4 ml-4">
-          <Link href="/calendar" className="text-sm hover:text-gray-600 transition-colors">
-            Calendar
-          </Link>
-          <Link href="/clubs" className="text-sm hover:text-gray-600 transition-colors">
-            Clubs
-          </Link>
-        </div>
       </div>
 
-      {/* Right: Auth */}
-      <div className="flex items-center">
+      {/* Right: Nav Links + Auth */}
+      <div className="flex items-center gap-4">
+        <Link href="/calendar" className="text-sm hover:text-[#89CFF0] transition-colors">
+          Calendar
+        </Link>
+        <Link href="/clubs" className="text-sm hover:text-[#89CFF0] transition-colors">
+          Clubs
+        </Link>
         {session?.user ? (
           <div className="relative" ref={dropdownRef}>
             <button
@@ -108,7 +105,7 @@ export default function Navbar() {
         ) : (
           <Link
             href="/login"
-            className="bg-gray-900 text-white px-4 py-1.5 rounded-md text-sm font-medium hover:bg-gray-100 transition-colors"
+            className="bg-[#89CFF0] text-[#001f3f] px-4 py-1.5 rounded-md text-sm font-medium hover:bg-[#a8dcf5] transition-colors"
           >
             Log In
           </Link>
