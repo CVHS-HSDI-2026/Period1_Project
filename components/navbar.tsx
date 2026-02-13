@@ -42,7 +42,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-[#001f3f] text-white h-14 flex items-center px-6 justify-between">
+    <nav className="bg-navy text-white h-14 flex items-center px-6 justify-between">
       {/* Left: Logo */}
       <div className="flex items-center">
         <Link href="/" className="flex items-center gap-2">
@@ -53,10 +53,10 @@ export default function Navbar() {
 
       {/* Right: Nav Links + Auth */}
       <div className="flex items-center gap-4">
-        <Link href="/calendar" className="text-sm hover:text-[#89CFF0] transition-colors">
+        <Link href="/calendar" className="text-sm hover:text-baby-blue transition-colors">
           Calendar
         </Link>
-        <Link href="/clubs" className="text-sm hover:text-[#89CFF0] transition-colors">
+        <Link href="/clubs" className="text-sm hover:text-baby-blue transition-colors">
           Clubs
         </Link>
         {session?.user ? (
@@ -105,7 +105,7 @@ export default function Navbar() {
         ) : (
           <Link
             href="/login"
-            className="bg-[#89CFF0] text-[#001f3f] px-4 py-1.5 rounded-md text-sm font-medium hover:bg-[#a8dcf5] transition-colors"
+            className="bg-baby-blue text-navy px-4 py-1.5 rounded-md text-sm font-medium hover:bg-baby-blue-light transition-colors"
           >
             Log In
           </Link>

@@ -41,7 +41,7 @@ export function SignupForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: data.name,
-          email: data.email,
+          email: data.email.toLocaleLowerCase(),
           password: data.password,
           graduationYear: data.graduationYear,
         }),

@@ -73,7 +73,7 @@ export default function Home() {
       <div className="mx-auto flex max-w-3xl flex-col gap-12">
         {/* Announcements Section */}
         <section className="flex flex-col items-center gap-6">
-          <h2 className="text-3xl font-bold text-[#001f3f]">Announcements</h2>
+          <h2 className="text-3xl font-bold text-navy">Announcements</h2>
           <Carousel className="w-full max-w-xl">
             <CarouselContent>
               {displayAnnouncements.map((a) => (
@@ -81,10 +81,10 @@ export default function Home() {
                   <div className="flex flex-col rounded-xl bg-white shadow overflow-hidden">
                     {/* Header: club name + room number */}
                     <div className="flex items-center justify-between px-5 pt-4">
-                      <span className="text-xl font-bold text-[#001f3f]">
+                      <span className="text-xl font-bold text-navy">
                         {a.club.name}
                       </span>
-                      <span className="text-xl font-bold text-[#001f3f]">
+                      <span className="text-xl font-bold text-navy">
                         {a.club.roomNumber}
                       </span>
                     </div>
@@ -128,7 +128,7 @@ export default function Home() {
 
         {/* Today's Meetings Section */}
         <section className="flex flex-col items-center gap-6">
-          <h2 className="text-3xl font-bold text-[#001f3f]">
+          <h2 className="text-3xl font-bold text-navy">
             Today&apos;s Meetings
           </h2>
           <div className="h-48 w-full max-w-xl rounded-xl bg-white shadow" />
