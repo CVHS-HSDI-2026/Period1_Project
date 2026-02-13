@@ -63,7 +63,7 @@ export function SignupForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+        <CardTitle className="text-2xl font-bold text-navy">Create an account</CardTitle>
         <CardDescription>
           Enter your information to create a student account
         </CardDescription>
@@ -142,14 +142,14 @@ export function SignupForm() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4 pt-4">
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button type="submit" className="w-full bg-navy hover:bg-navy/90" disabled={isSubmitting}>
             {isSubmitting ? "Creating account..." : "Sign up"}
           </Button>
           <p className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="text-primary underline-offset-4 hover:underline"
+              className="text-navy underline-offset-4 hover:underline"
             >
               Sign in
             </Link>
