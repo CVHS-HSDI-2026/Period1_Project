@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import axios from "axios";
 import { Search, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -140,6 +141,15 @@ export default function ClubsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
+          </div>
+          <div className="flex flex-wrap items-center gap-2 md:flex-row">
+            <Button asChild variant="outline">Create Club</Button>
+            <Link
+                  href="/Create-Club"
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Create-Club
+                </Link>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
