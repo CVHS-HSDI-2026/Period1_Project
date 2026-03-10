@@ -126,6 +126,7 @@ export default function ClubsPage() {
   }, [search]);
 
   return (
+    
     <div className="min-h-screen px-6 py-12">
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-8">
         <h1 className="text-3xl font-bold text-white">Search for Clubs</h1>
@@ -142,15 +143,15 @@ export default function ClubsPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
+          
           <div className="flex flex-wrap items-center gap-2 md:flex-row">
-            <Button asChild variant="outline">Create Club</Button>
-            <Link
-                  href="/Create-Club"
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Create-Club
-                </Link>
+            <Button asChild variant="outline">
+            <Link href="/clubs/create-club">
+              Create Club
+            </Link>
+            </Button>
           </div>
+          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="default" className="gap-2 bg-white">
