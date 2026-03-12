@@ -8,9 +8,11 @@ import { Card, CardContent } from "@/components/ui/card";
 type Meeting = {
   id: string;
   club: string;
-  roomNumber: string;
-  time: string;
+  location: string;
+  startTime: string;
+  endTime: string;
   date: string;
+  desc: string;
 };
 
 const TAG_COLORS: Record<string, string> = {
@@ -47,50 +49,64 @@ const MOCK_MEETINGS: Meeting[] = [
     id: "1",
     club: "Key Club",
     date: "2026-03-05",
-    time: "Lunch",
-    roomNumber: "7201",
+    startTime: "1:00 PM",
+    endTime: "1:20 PM",
+    location: "7201",
+    desc: "Discussing volunteer events!...",
   },
   {
     id: "2",
     club: "Drama Club",
     date: "2026-03-05",
-    time: "Lunch",
-    roomNumber: "8202",
+    startTime: "12:55",
+    endTime: "1:20",
+    location: "8202",
+    desc: "Going over new scripts...",
   },
   {
     id: "3",
     club: "Robotics Club",
     date: "2026-03-10",
-    time: "Snack",
-    roomNumber: "8104",
+    startTime: "10:30",
+    endTime: "10:40",
+    location: "8104",
+    desc: "Handing out shirts...",
   },
   {
     id: "4",
     club: "Art Club",
     date: "2026-03-15",
-    time: "Lunch",
-    roomNumber: "5203",
+    startTime: "12:55",
+    endTime: "1:20",
+    location: "5203",
+    desc: "Organizing art supplies...",
   },
   {
     id: "5",
     club: "Chess Club",
     date: "2026-03-20",
-    time: "Snack",
-    roomNumber: "7207",
+    startTime: "10:30",
+    endTime: "10:40",
+    location: "7207",
+    desc: "Registering...",
   },
   {
     id: "6",
     club: "Math Club",
     date: "2026-03-20",
-    time: "Snack",
-    roomNumber: "7302",
+    startTime: "10:30",
+    endTime: "10:44",
+    location: "7302",
+    desc: "Math...",
   },
   {
     id: "7",
     club: "Science Olympiad",
     date: "2026-03-25",
-    time: "Lunch",
-    roomNumber: "2205",
+    startTime: "12:55",
+    endTime: "1:20",
+    location: "2205",
+    desc: "Science...",
   },
 ];
 
@@ -112,7 +128,7 @@ export default function CalendarPage() {
         {dayMeetings.map((meeting) => (
           <span
             key={meeting.id}
-            className="text-[10px] px-1.5 py-0.5 rounded-full text-white w-full text-center truncate"
+            className="text-[10px] px-1.5 py-0.5 rounded-full text-white max-w-full text-center truncate block"
             style={{ backgroundColor: getClubColor(meeting.club) }}
             onMouseEnter={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
@@ -128,16 +144,20 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="min-h-screen px-6 py-12">
+    <div className="min-h-screen px-0 py-12">
       <section className="flex flex-col items-center gap-6">
         <h2 className="text-3xl font-bold text-navy">Upcoming Meetings</h2>
-        <Card className="w-1/2">
+        <Card className="w-3/5">
           <CardContent className="content-center w-full">
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
-              className="rounded-lg w-full [--cell-size:--spacing(16)] md:[--cell-size:--spacing(20)]"
+              fixedWeeks
+              className="rounded-lg w-full [--cell-size:--spacing(8)] md:[--cell-size:--spacing(12))]"
+              classNames={{
+                caption_label: "text-xl font-semibold",
+              }}
               components={{
                 DayButton: ({ day, ...props }) => (
                   <button {...props}>
@@ -158,9 +178,15 @@ export default function CalendarPage() {
         >
           <p className="font-semibold text-sm mb-2">{hovered.meeting.club}</p>
           <p className="text-xs text-gray-500">
-            Room {hovered.meeting.roomNumber}
+            Room {hovered.meeting.location}
           </p>
-          <p className="text-xs text-gray-500">Time: {hovered.meeting.time}</p>
+          <p className="text-xs text-gray-500">
+            Start Time: {hovered.meeting.startTime}
+          </p>
+          <p className="text-xs text-gray-500">
+            End Time: {hovered.meeting.endTime}
+          </p>
+          <p className="text-xs text-gray-500">{hovered.meeting.desc}</p>
         </div>
       )}
     </div>
