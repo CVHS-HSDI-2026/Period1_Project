@@ -11,18 +11,20 @@ import {
   FieldTitle,
 } from "@/components/ui/field";
 import {Input} from "@/components/ui/input"
-export function FieldInput() {
+export default function FieldInput() {
     return (
         <FieldSet className = "w-full max-w-xs">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="Club Name">Club Name</FieldLabel>
-              <Input id="CName" type="text" placeholder="Falkon Robotics"/>
-              <FieldDescription>
-                Choose a unique username for your club!
-              </FieldDescription>
+              <Input id="CName" type="text" placeholder="Insert Name(e.g. Falkon Robotics)"/>
+              <FieldLabel htmlFor="Description">Description</FieldLabel>
+              <Input id="Des" type="text" placeholder="Insert Description(e.g. Build stuff)"/>
+              <FieldLabel htmlFor="Room Number">Room Number</FieldLabel>
+              <Input id="Num" type="text" placeholder="Insert Room Number"/>
             </Field>
           </FieldGroup>
         </FieldSet>
+        
     )
 }

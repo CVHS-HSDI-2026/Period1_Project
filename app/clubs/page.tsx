@@ -146,7 +146,7 @@ export default function ClubsPage() {
           
           <div className="flex flex-wrap items-center gap-2 md:flex-row">
             <Button asChild variant="outline">
-            <Link href="/clubs/create-club">
+            <Link href="/clubs/create">
               Create Club
             </Link>
             </Button>
