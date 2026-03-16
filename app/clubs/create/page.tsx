@@ -13,7 +13,7 @@ import {
 import {Input} from "@/components/ui/input"
 export default function FieldInput() {
     return (
-        <FieldSet className = "w-full max-w-xs">
+        <FieldSet className = "w-[700px] max-w-l">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="Club Name">Club Name</FieldLabel>
@@ -25,6 +25,5 @@ export default function FieldInput() {
             </Field>
           </FieldGroup>
         </FieldSet>
-        
     )
 }
