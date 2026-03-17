@@ -52,7 +52,7 @@ const MOCK_MEETINGS: Meeting[] = [
     startTime: "1:00 PM",
     endTime: "1:20 PM",
     location: "7201",
-    desc: "Discussing volunteer events!...",
+    desc: "Discussing volunteer events!",
   },
   {
     id: "2",
@@ -61,7 +61,7 @@ const MOCK_MEETINGS: Meeting[] = [
     startTime: "12:55",
     endTime: "1:20",
     location: "8202",
-    desc: "Going over new scripts...",
+    desc: "Going over new scripts",
   },
   {
     id: "3",
@@ -70,7 +70,7 @@ const MOCK_MEETINGS: Meeting[] = [
     startTime: "10:30",
     endTime: "10:40",
     location: "8104",
-    desc: "Handing out shirts...",
+    desc: "Handing out shirts",
   },
   {
     id: "4",
@@ -79,7 +79,7 @@ const MOCK_MEETINGS: Meeting[] = [
     startTime: "12:55",
     endTime: "1:20",
     location: "5203",
-    desc: "Organizing art supplies...",
+    desc: "Organizing art supplies",
   },
   {
     id: "5",
@@ -88,16 +88,16 @@ const MOCK_MEETINGS: Meeting[] = [
     startTime: "10:30",
     endTime: "10:40",
     location: "7207",
-    desc: "Registering...",
+    desc: "Registering blah blah lorem ipsum",
   },
   {
     id: "6",
     club: "Math Club",
-    date: "2026-03-20",
+    date: "2026-03-24",
     startTime: "10:30",
     endTime: "10:44",
     location: "7302",
-    desc: "Math...",
+    desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   },
   {
     id: "7",
@@ -106,7 +106,7 @@ const MOCK_MEETINGS: Meeting[] = [
     startTime: "12:55",
     endTime: "1:20",
     location: "2205",
-    desc: "Science...",
+    desc: "Science",
   },
 ];
 
@@ -126,9 +126,11 @@ export default function CalendarPage() {
       <div className="flex flex-col items-center gap-0.5 w-full">
         <span>{day.getDate()}</span>
         {dayMeetings.map((meeting) => (
-          <span
+          <button
             key={meeting.id}
-            className="text-[10px] px-1.5 py-0.5 rounded-full text-white max-w-full text-center truncate block"
+            //fill in actual url later
+            onClick={() => (window.location.href = "/clubs/${meeting.club}")}
+            className="text-[10px] lg:text-[12px] px-1.5 py-0.5 rounded-full text-white text-center truncate max-w-[10ch] lg:max-w-[14ch]"
             style={{ backgroundColor: getClubColor(meeting.club) }}
             onMouseEnter={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
@@ -137,7 +139,7 @@ export default function CalendarPage() {
             onMouseLeave={() => setHovered(null)}
           >
             {meeting.club}
-          </span>
+          </button>
         ))}
       </div>
     );
@@ -186,8 +188,10 @@ export default function CalendarPage() {
           <p className="text-xs text-gray-500">
             End Time: {hovered.meeting.endTime}
           </p>
-          <p className="text-xs text-gray-500">{hovered.meeting.desc}</p>
-        </div>
+          <p className="text-xs text-gray-500 truncate max-w-[200px]">
+            {hovered.meeting.desc}
+          </p>
+        </div> //truncate the description OR we can put a max length for meeting descriptions (so they fit on the little icon) since clicking the button just takes you to the whole club page, not an in-depth meeting page
       )}
     </div>
   );
