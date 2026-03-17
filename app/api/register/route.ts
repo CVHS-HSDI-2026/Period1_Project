@@ -1,39 +1,85 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server";
+import bcrypt from "bcrypt";
+import { db } from "@/lib/db";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { name: string } }
-) {
-  // Get token from Authorization header.
-  const authHeader = request.headers.get("authorization")
-  const token = authHeader?.replace("Bearer ", "")
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { name, email, password, graduationYear } = body;
 
-  // Or from query parameters.
-  const queryToken = request.nextUrl.searchParams.get("token")
+    // Validation
+    if (!name || !email || !password || !graduationYear) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
 
-  // Check if token is valid.
-  if (!isValidToken(token || queryToken)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    if (password.length < 8) {
+      return NextResponse.json(
+        { error: "Password must be at least 8 characters" },
+        { status: 400 }
+      );
+    }
+
+    if (name.length > 100) {
+      return NextResponse.json(
+        { error: "Name must be 100 characters or less" },
+        { status: 400 }
+      );
+    }
+
+    if (email.length > 255) {
+      return NextResponse.json(
+        { error: "Email must be 255 characters or less" },
+        { status: 400 }
+      );
+    }
+
+    // Check if user already exists
+    const existingUser = await db.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "An account with this email already exists" },
+        { status: 400 }
+      );
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Create user and student profile in a transaction
+    const user = await db.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        student: {
+          create: {
+            graduationYear: parseInt(graduationYear),
+          },
+        },
+      },
+      include: {
+        student: true,
+      },
+    });
+
+    return NextResponse.json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
-
-  // Check if token can access this component.
-  if (!hasAccessToComponent(token, params.name)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-  }
-
-  // Return the component.
-  const component = await getComponent(params.name)
-  return NextResponse.json(component)
-}
-
-function isValidToken(token: string | null) {
-  // Add your token validation logic here.
-  // Check against database, JWT validation, etc.
-  return token === process.env.VALID_TOKEN
-}
-
-function hasAccessToComponent(token: string, componentName: string) {
-  // Add role-based access control here.
-  // Check if token can access specific component.
-  return true // Your logic here.
 }
