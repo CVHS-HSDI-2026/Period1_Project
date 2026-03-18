@@ -1,46 +1,5 @@
 "use client"
 
-import * as React from "react"
-import { Avatar, AvatarFallback, AvatarImage, AvatarBadge } from "@/components/ui/avatar"
-import { LoginForm } from "@/components/auth/login-form";
-import { PlusIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command"
-import {
-  BellIcon,
-  CalculatorIcon,
-  CalendarIcon,
-  ClipboardPasteIcon,
-  CodeIcon,
-  CopyIcon,
-  CreditCardIcon,
-  FileTextIcon,
-  FolderIcon,
-  FolderPlusIcon,
-  HelpCircleIcon,
-  HomeIcon,
-  ImageIcon,
-  InboxIcon,
-  LayoutGridIcon,
-  ListIcon,
-  ScissorsIcon,
-  SettingsIcon,
-  TrashIcon,
-  UserIcon,
-  ZoomInIcon,
-  ZoomOutIcon,
-} from "lucide-react"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   Field,
   FieldDescription,
@@ -51,15 +10,6 @@ import {
   FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 
 export default function Page() {
   return (
