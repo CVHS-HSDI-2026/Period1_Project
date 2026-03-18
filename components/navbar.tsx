@@ -59,6 +59,9 @@ export default function Navbar() {
         <Link href="/clubs" className="text-sm hover:text-baby-blue transition-colors">
           Clubs
         </Link>
+        <Link href="/account" className="text-sm hover:text-baby-blue transition-colors">
+          Account
+        </Link>
         {session?.user ? (
           <div className="relative" ref={dropdownRef}>
             <button
