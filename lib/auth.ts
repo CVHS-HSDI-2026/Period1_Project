@@ -24,6 +24,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const email = credentials.email as string;
         const password = credentials.password as string;
 
+        console.time("[auth] db.user.findUnique");
         const user = await db.user.findUnique({
           where: { email },
           include: {
@@ -31,12 +32,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             admin: true,
           },
         });
+        console.timeEnd("[auth] db.user.findUnique");
 
         if (!user || !user.password) {
           return null;
         }
 
+        console.time("[auth] bcrypt.compare");
         const passwordMatch = await bcrypt.compare(password, user.password);
+        console.timeEnd("[auth] bcrypt.compare");
 
         if (!passwordMatch) {
           return null;
@@ -47,6 +51,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: user.email,
           name: user.name,
           image: user.image,
+          role: user.student ? "STUDENT" : user.admin ? "ADMIN" : undefined,
+          studentId: user.student?.id,
+          adminId: user.admin?.id,
         };
       },
     }),
@@ -54,25 +61,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     ...authConfig.callbacks,
     async jwt({ token, user }) {
-      // Only fetch role on initial sign in, not every request
       if (user) {
         token.id = user.id;
-
-        const dbUser = await db.user.findUnique({
-          where: { id: user.id },
-          include: {
-            student: true,
-            admin: true,
-          },
-        });
-
-        if (dbUser?.student) {
-          token.role = "STUDENT";
-          token.studentId = dbUser.student.id;
-        } else if (dbUser?.admin) {
-          token.role = "ADMIN";
-          token.adminId = dbUser.admin.id;
-        }
+        token.role = user.role;
+        token.studentId = user.studentId;
+        token.adminId = user.adminId;
       }
 
       return token;
