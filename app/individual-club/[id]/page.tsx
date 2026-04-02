@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
 
 type ClubPerson = {
   name: string;
@@ -111,9 +112,24 @@ export default function IndividualClubPage({ params }: { params: { id: string } 
               Sign up
             </Button>
           </div>
+
+          <Card className="gap-4 py-5">
+            <CardHeader className="pb-0">
+              <CardTitle className="text-base">Calendar</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  fixedWeeks
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
   );
 }
-
