@@ -46,7 +46,7 @@ function getClubColor(club: string): string {
 
 const MOCK_MEETINGS: Meeting[] = [
   {
-    id: "1",
+    id: "2",
     club: "Key Club",
     date: "2026-03-05",
     startTime: "1:00 PM",
@@ -55,7 +55,7 @@ const MOCK_MEETINGS: Meeting[] = [
     desc: "Discussing volunteer events!",
   },
   {
-    id: "2",
+    id: "3",
     club: "Drama Club",
     date: "2026-03-05",
     startTime: "12:55",
@@ -64,7 +64,7 @@ const MOCK_MEETINGS: Meeting[] = [
     desc: "Going over new scripts",
   },
   {
-    id: "3",
+    id: "1",
     club: "Robotics Club",
     date: "2026-03-10",
     startTime: "10:30",
@@ -73,7 +73,7 @@ const MOCK_MEETINGS: Meeting[] = [
     desc: "Handing out shirts",
   },
   {
-    id: "4",
+    id: "6",
     club: "Art Club",
     date: "2026-03-15",
     startTime: "12:55",
@@ -82,7 +82,7 @@ const MOCK_MEETINGS: Meeting[] = [
     desc: "Organizing art supplies",
   },
   {
-    id: "5",
+    id: "4",
     club: "Chess Club",
     date: "2026-03-20",
     startTime: "10:30",
@@ -91,7 +91,7 @@ const MOCK_MEETINGS: Meeting[] = [
     desc: "Registering blah blah lorem ipsum",
   },
   {
-    id: "6",
+    id: "10",
     club: "Math Club",
     date: "2026-03-24",
     startTime: "10:30",
@@ -129,8 +129,10 @@ export default function CalendarPage() {
           <button
             key={meeting.id}
             //fill in actual url later
-            onClick={() => (window.location.href = "/clubs/${meeting.club}")}
-            className="text-[10px] lg:text-[12px] px-1.5 py-0.5 rounded-full text-white text-center truncate max-w-[10ch] lg:max-w-[14ch]"
+            onClick={() =>
+              (window.location.href = "/individual-club/${meeting.id}")
+            }
+            className="text-[10px] lg:text-[12px] px-1.5 py-0.5 rounded-full text-white text-center truncate max-w-[10ch]"
             style={{ backgroundColor: getClubColor(meeting.club) }}
             onMouseEnter={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
@@ -146,17 +148,17 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="min-h-screen px-0 py-12">
+    <div className="min-h-screen px-0 py-6">
       <section className="flex flex-col items-center gap-6">
         <h2 className="text-3xl font-bold text-navy">Upcoming Meetings</h2>
-        <Card className="w-3/5">
+        <Card className="w-3/5 md:w-1/2 lg:w-2/5">
           <CardContent className="content-center w-full">
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
               fixedWeeks
-              className="rounded-lg w-full [--cell-size:--spacing(8)] md:[--cell-size:--spacing(12))]"
+              className="rounded-lg w-full [--cell-size:--spacing(4)] md:[--cell-size:--spacing(2)] lg:[--cell-size:--spacing(0)]"
               classNames={{
                 caption_label: "text-xl font-semibold",
               }}
