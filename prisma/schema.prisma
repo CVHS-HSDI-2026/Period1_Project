@@ -140,7 +140,7 @@ model Club {
   members Student[] @relation("StudentClubs")
   officers Student[] @relation("ClubOfficers")
   announcements Announcement[]
-  meetings Meeting[] @relation("ClubAnnouncements")
+  meetings Meeting[] //@relation("ClubAnnouncements")
   status Status @default(PENDING)
 }
 
@@ -174,7 +174,7 @@ model Meeting {
   roomNumber String @db.VarChar(20)
   Notes String?
   clubId String
-  club Club @relation("ClubAnnouncements", fields: [clubId], references: [id])
+  club Club @relation(fields: [clubId], references: [id])
 }
 
 enum Status {

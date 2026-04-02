@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useSession } from "next-auth/react";
-import { Axios } from "axios"
-import { use, useState } from "react"
+import  Axios  from "axios"
+import { use, useState, useEffect } from "react"
 
 export default function Page() {
 
@@ -43,7 +43,7 @@ export async function AccountForm() {
     if (session?.user?.email) {
       // fetch user data from server
       Axios.get(`/api/customize?email=${session.user.email}`)
-        .then((response) => {
+        .then((response: any) => {
           const { name, email, student } = response.data;
           setForm({
             name: name || "",
@@ -53,10 +53,10 @@ export async function AccountForm() {
             password: "",
           });
         })
-        .catch((error) => {
+        .catch((error: Error) => {
           console.error("Error fetching user data:", error);
         });
-  }, [session]);
+  }}, [session]);
 
 
 
