@@ -97,29 +97,51 @@ model Student {
   updatedAt DateTime @updatedAt
 }
 
+// model Club {
+//   id             String   @id @default(uuid())
+//   name           String   @db.VarChar(150)
+//   description    String   @db.VarChar(2000)
+//   roomNumber     String   @db.VarChar(20)
+//   photoUrl       String   @db.VarChar(2048)
+//   startDate      DateTime
+//   Frequency      Int // next meeting is in 1 week, 2 weeks, etc.
+//   Weekdays       String[] // e.g., ["Monday", "Wednesday"]
+//   // every frequency weeks on these weekdays there is a meeting
+//   links          String[] // URLs - validate max 2048 chars in app
+//   location       Int
+//   tags           String[] // validate max 50 chars per tag in app
+//   teacherAdvisor String?  @db.VarChar(100)
+
+//   // announcements made by officers, and pertain to clubs
+//   announcements Announcement[]
+//   members       Student[]      @relation("StudentClubs")
+//   officers      Student[]      @relation("ClubOfficers")
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   // officers are a subset of members, ie all officers must be members
+// }
+
 model Club {
-  id             String   @id @default(uuid())
-  name           String   @db.VarChar(150)
-  description    String   @db.VarChar(2000)
-  roomNumber     String   @db.VarChar(20)
-  photoUrl       String   @db.VarChar(2048)
-  startDate      DateTime
-  Frequency      Int // next meeting is in 1 week, 2 weeks, etc.
-  Weekdays       String[] // e.g., ["Monday", "Wednesday"]
-  // every frequency weeks on these weekdays there is a meeting
-  links          String[] // URLs - validate max 2048 chars in app
-  location       Int
-  tags           String[] // validate max 50 chars per tag in app
-  teacherAdvisor String?  @db.VarChar(100)
+  //required data
+  id String @id @default(uuid())
+  name String @db.VarChar(150)
+  description String @db.VarChar(2000)
+  roomNumber String @db.VarChar(20)
+  tags String[]
+  photoUrl String @db.VarChar(2048)
+  signUpLink String @db.VarChar(2048)
+  otherLinks String[] @db.VarChar(2048)
+  advisorName String @db.VarChar(64)
+  advisorEmail String @db.VarChar(128)
+  officerEmail String[] @db.VarChar(128)
 
-  // announcements made by officers, and pertain to clubs
+  //data that will be added afterwords
+  members Student[] @relation("StudentClubs")
+  officers Student[] @relation("ClubOfficers")
   announcements Announcement[]
-  members       Student[]      @relation("StudentClubs")
-  officers      Student[]      @relation("ClubOfficers")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // officers are a subset of members, ie all officers must be members
+  meetings Meeting[] //@relation("ClubAnnouncements")
+  status Status @default(PENDING)
 }
 
 model Admin {
@@ -143,4 +165,20 @@ model Announcement {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Meeting {
+  id String @id
+  date DateTime @db.Date
+  time DateTime @db.Time
+  roomNumber String @db.VarChar(20)
+  Notes String?
+  clubId String
+  club Club @relation(fields: [clubId], references: [id])
+}
+
+enum Status {
+  APPROVED
+  REJECTED
+  PENDING
 }
