@@ -28,7 +28,7 @@ export default function Page() {
   )
 }
 
-export async function AccountForm() {
+export function AccountForm() {
   const { data: session } = useSession();
   // store form
   const [form, setForm] = useState({
