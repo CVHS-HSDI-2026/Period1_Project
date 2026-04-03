@@ -1,6 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
+export async function POST(request: NextRequest) {
+    try {
+        const body = await request.json();
+        const { name, description, roomNumber, advisorName, advisorEmail, signUpLink } = body;
+
+        if (!name || !description || !roomNumber || !advisorName || !advisorEmail || !signUpLink) {
+            return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+        }
+
+        const club = await db.club.create({
+            data: {
+                name,
+                description,
+                roomNumber,
+                advisorName,
+                advisorEmail,
+                signUpLink,
+                tags: [],
+                photoUrl: "",
+                otherLinks: [],
+                officerEmail: [],
+            },
+        });
+
+        return NextResponse.json(club, { status: 201 });
+    } catch (error) {
+        console.error("Error creating club:", error);
+        return NextResponse.json(
+            { error: "An error occurred while creating the club" },
+            { status: 500 }
+        );
+    }
+}
+
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
