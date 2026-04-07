@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Search, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -15,110 +14,32 @@ import { ClubCardSearch, type ClubCardData } from "@/components/club-card-search
 
 const PAGE_SIZE = 9;
 
-const PLACEHOLDER_CLUBS: ClubCardData[] = [
-  {
-    id: "1",
-    name: "Robotics Club",
-    description: "Build and program robots to compete in regional and national competitions.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Robotics",
-    tags: ["STEM", "Engineering"],
-  },
-  {
-    id: "2",
-    name: "Key Club",
-    description: "Community service organization dedicated to helping others and building character.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Key+Club",
-    tags: ["Service", "Leadership"],
-  },
-  {
-    id: "3",
-    name: "Drama Club",
-    description: "Explore the performing arts through plays, musicals, and improv nights.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Drama",
-    tags: ["Arts", "Performance"],
-  },
-  {
-    id: "4",
-    name: "Chess Club",
-    description: "Sharpen your strategic thinking and compete in tournaments.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Chess",
-    tags: ["Strategy", "Competition"],
-  },
-  {
-    id: "5",
-    name: "Debate Club",
-    description: "Develop public speaking and argumentation skills in a competitive environment.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Debate",
-    tags: ["Speaking", "Competition"],
-  },
-  {
-    id: "6",
-    name: "Art Club",
-    description: "Express yourself through painting, drawing, and mixed media projects.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Art",
-    tags: ["Arts", "Creative"],
-  },
-  {
-    id: "7",
-    name: "Science Olympiad",
-    description: "Compete in science events ranging from biology to engineering.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Science",
-    tags: ["STEM", "Competition"],
-  },
-  {
-    id: "8",
-    name: "Photography Club",
-    description: "Learn photography techniques and showcase your work in exhibitions.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Photo",
-    tags: ["Arts", "Creative"],
-  },
-  {
-    id: "9",
-    name: "Environmental Club",
-    description: "Promote sustainability and organize campus clean-up events.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Eco",
-    tags: ["Service", "Environment"],
-  },
-  {
-    id: "10",
-    name: "Math Club",
-    description: "Tackle challenging problems and prepare for math competitions.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Math",
-    tags: ["STEM", "Competition"],
-  },
-];
-
 export default function ClubsPage() {
-  const [clubs, setClubs] = useState<ClubCardData[]>([]);
+  const [clubs, setClubs] = useState<ClubCardData[] | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
 
-  // TODO: Uncomment when there is data in the database
-  // useEffect(() => {
-  //   axios
-  //     .get<{ clubs: ClubCardData[]; totalPages: number; currentPage: number }>(
-  //       `/api/clubs?search=${encodeURIComponent(search)}&page=${page}&pageSize=${PAGE_SIZE}`
-  //     )
-  //     .then((res) => {
-  //       setClubs(res.data.clubs);
-  //       setTotalPages(res.data.totalPages);
-  //     })
-  //     .catch((err) => console.error("Failed to fetch clubs:", err));
-  // }, [search, page]);
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get<{ clubs: ClubCardData[]; totalPages: number; currentPage: number }>(
+        `/api/clubs?search=${encodeURIComponent(search)}&page=${page}&pageSize=${PAGE_SIZE}`
+      )
+      .then((res) => {
+        setClubs(res.data.clubs);
+        setTotalPages(res.data.totalPages);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch clubs:", err);
+        setClubs(null);
+      })
+      .finally(() => setLoading(false));
+  }, [search, page]);
 
-  // Placeholder filtering + pagination while fetch is commented out
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return PLACEHOLDER_CLUBS.filter((c) => c.name.toLowerCase().includes(q));
-  }, [search]);
-
-  const placeholderTotalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const displayClubs =
-    clubs.length > 0
-      ? clubs
-      : filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-  const displayTotalPages = clubs.length > 0 ? totalPages : placeholderTotalPages;
+  const displayClubs = clubs ?? [];
+  const displayTotalPages = totalPages;
 
   // Reset to page 1 when search changes
   useEffect(() => {
@@ -126,7 +47,6 @@ export default function ClubsPage() {
   }, [search]);
 
   return (
-    
     <div className="min-h-screen px-6 py-12">
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-8">
         <h1 className="text-3xl font-bold text-white">Search for Clubs</h1>
@@ -143,15 +63,6 @@ export default function ClubsPage() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          
-          <div className="flex flex-wrap items-center gap-2 md:flex-row">
-            <Button asChild variant="outline">
-            <Link href="/clubs/create">
-              Create Club
-            </Link>
-            </Button>
-          </div>
-          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="default" className="gap-2 bg-white">
@@ -168,7 +79,9 @@ export default function ClubsPage() {
         </div>
 
         {/* Club Cards Grid */}
-        {displayClubs.length > 0 ? (
+        {loading ? (
+          <p className="py-12 text-lg text-white/70">Loading...</p>
+        ) : displayClubs.length > 0 ? (
           <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {displayClubs.map((club) => (
               <ClubCardSearch key={club.id} club={club} />
