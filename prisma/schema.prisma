@@ -1,21 +1,21 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// ============================================================
+// Prisma Schema
+// Learn more: https://pris.ly/d/prisma-schema
+// ============================================================
 
 generator client {
   provider = "prisma-client"
   output   = "../lib/generated/prisma"
+  url      = env("DATABASE_URL")
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-// ===========================================
-// AUTH.JS MODELS
-// ===========================================
+// ============================================================
+// AUTH MODELS
+// ============================================================
 
 model User {
   id            String    @id @default(uuid())
@@ -25,11 +25,8 @@ model User {
   name          String?   @db.VarChar(100)
   image         String?   @db.VarChar(2048)
 
-  // Profile relations (one-to-one)
-  student Student?
-  admin   Admin?
-
-  // Auth.js relations
+  student  Student?
+  admin    Admin?
   accounts Account[]
   sessions Session[]
 
@@ -79,68 +76,87 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ===========================================
+// ============================================================
 // DOMAIN MODELS
-// ===========================================
+// ============================================================
 
 model Student {
   id     String @id @default(uuid())
   userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  graduationYear        Int
-  clubs                 Club[]         @relation("StudentClubs")
-  officerOf             Club[]         @relation("ClubOfficers")
-  posteredAnnouncements Announcement[]
+  graduationYear Int
+  clubs          Club[]         @relation("StudentClubs")
+  officerOf      Club[]         @relation("ClubOfficers")
+  announcements  Announcement[]
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Admin {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Club {
-  id             String   @id @default(uuid())
-  name           String   @db.VarChar(150)
-  description    String   @db.VarChar(2000)
-  roomNumber     String   @db.VarChar(20)
-  photoUrl       String   @db.VarChar(2048)
-  startDate      DateTime
-  Frequency      Int // next meeting is in 1 week, 2 weeks, etc.
-  Weekdays       String[] // e.g., ["Monday", "Wednesday"]
-  // every frequency weeks on these weekdays there is a meeting
-  links          String[] // URLs - validate max 2048 chars in app
-  location       Int
-  tags           String[] // validate max 50 chars per tag in app
-  teacherAdvisor String?  @db.VarChar(100)
+  id           String   @id @default(uuid())
+  name         String   @db.VarChar(150)
+  description  String   @db.VarChar(2000)
+  roomNumber   String   @db.VarChar(20)
+  tags         String[]
+  photoUrl     String   @db.VarChar(2048)
+  signUpLink   String   @db.VarChar(2048)
+  otherLinks   String[] @db.VarChar(2048)
+  advisorName  String   @db.VarChar(64)
+  advisorEmail String   @db.VarChar(128)
+  officerEmail String[] @db.VarChar(128)
+  status       Status   @default(PENDING)
 
-  // announcements made by officers, and pertain to clubs
-  announcements Announcement[]
   members       Student[]      @relation("StudentClubs")
   officers      Student[]      @relation("ClubOfficers")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // officers are a subset of members, ie all officers must be members
+  announcements Announcement[]
+  meetings      Meeting[]
 }
 
-model Admin {
-  id     String @id @default(uuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Meeting {
+  id         String   @id
+  date       DateTime @db.Date
+  time       DateTime @db.Time
+  roomNumber String   @db.VarChar(20)
+  notes      String?
+  clubId     String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  club Club @relation(fields: [clubId], references: [id])
 }
 
 model Announcement {
-  id       String   @id @default(uuid())
-  title    String   @db.VarChar(200)
-  content  String   @db.VarChar(5000)
-  images   String[] @db.VarChar(2048) // urls
-  poster   Student  @relation(fields: [posterId], references: [id])
-  club     Club     @relation(fields: [clubId], references: [id])
+  id       String @id @default(uuid())
+  title    String @db.VarChar(200)
+  content  String @db.VarChar(5000)
+  images   String[] @db.VarChar(2048)
   clubId   String
   posterId String
 
+  club   Club    @relation(fields: [clubId], references: [id])
+  poster Student @relation(fields: [posterId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum Status {
+  APPROVED
+  PENDING
+  REJECTED
 }

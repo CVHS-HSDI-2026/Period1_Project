@@ -2,9 +2,11 @@
 
 import * as React from "react";
 import Image from "next/image";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
 
 type ClubPerson = {
   name: string;
@@ -17,49 +19,41 @@ type ClubDetails = {
   name: string;
   description: string;
   photoUrl: string;
+  signUpLink: string;
+  tags: string[];
   people: ClubPerson[];
 };
 
-const PLACEHOLDER_CLUBS: Record<string, ClubDetails> = {
-  "1": {
-    id: "1",
-    name: "Robotics Club",
-    description:
-      "Build and program robots to compete in regional and national competitions.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Robotics",
-    people: [
-      { name: "John Doe", role: "President", contact: "JohnDoe@school.edu" },
-      { name: "Jane Smith", role: "Vice President", contact: "jane.smith@school.edu" },
-      { name: "Name 3", role: "Secretary", contact: "Name3@school.edu" },
-    ],
-  },
-  "2": {
-    id: "2",
-    name: "Key Club",
-    description:
-      "Community service organization dedicated to helping others and building character.",
-    photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Key+Club",
-    people: [
-      { name: "Lil boy", role: "President", contact: "lilboy@school.edu" },
-      { name: "flightreacts", role: "Treasurer", contact: "flightreacts@school.edu" },
-    ],
-  },
-};
-
 export default function IndividualClubPage({ params }: { params: { id: string } }) {
-  const club =
-    PLACEHOLDER_CLUBS[params.id] ??
-    ({
-      id: params.id,
-      name: "Club",
-      description: "Club description goes here.",
-      photoUrl: "https://placehold.co/600x300/e2e8f0/475569?text=Club",
-      people: [
-        { name: "Officer Name", role: "Role", contact: "contact@school.edu" },
-      ],
-    } satisfies ClubDetails);
-
+  const [club, setClub] = React.useState<ClubDetails | null>(null);
+  const [notFound, setNotFound] = React.useState(false);
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(new Date());
+
+  React.useEffect(() => {
+    axios
+      .get<ClubDetails>(`/api/clubs/${params.id}`)
+      .then((res) => setClub(res.data))
+      .catch((err) => {
+        console.error("Failed to fetch club:", err);
+        if (err.response?.status === 404) setNotFound(true);
+      });
+  }, [params.id]);
+
+  if (notFound) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-white/70 text-lg">Club not found.</p>
+      </div>
+    );
+  }
+
+  if (!club) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-white/70 text-lg">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen px-6 py-12">
@@ -107,13 +101,30 @@ export default function IndividualClubPage({ params }: { params: { id: string } 
               </CardContent>
             </Card>
 
-            <Button className="w-full" type="button">
-              Sign up
+            <Button className="w-full" type="button" asChild>
+              <a href={club.signUpLink} target="_blank" rel="noopener noreferrer">
+                Sign up
+              </a>
             </Button>
           </div>
+
+          <Card className="gap-4 py-5">
+            <CardHeader className="pb-0">
+              <CardTitle className="text-base">Calendar</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  fixedWeeks
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
   );
 }
-
