@@ -65,9 +65,12 @@ export default function CalendarPage() {
         {dayMeetings.map((meeting) => (
           <button
             key={meeting.id}
-            onClick={() => (window.location.href = `/clubs/${meeting.clubId}`)}
-            className="text-[10px] lg:text-[12px] px-1.5 py-0.5 rounded-full text-white text-center truncate max-w-[10ch] lg:max-w-[14ch]"
-            style={{ backgroundColor: getClubColor(meeting.tags) }}
+            //fill in actual url later
+            onClick={() =>
+              (window.location.href = "/individual-club/${meeting.id}")
+            }
+            className="text-[10px] lg:text-[12px] px-1.5 py-0.5 rounded-full text-white text-center truncate max-w-[10ch]"
+            style={{ backgroundColor: getClubColor(meeting.club) }}
             onMouseEnter={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               setHovered({ meeting, x: rect.left, y: rect.bottom });
@@ -82,24 +85,27 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="min-h-screen px-0 py-12">
+    <div className="min-h-screen px-10 py-6">
       <section className="flex flex-col items-center gap-6">
         <h2 className="text-3xl font-bold text-navy">Upcoming Meetings</h2>
-        <Card className="w-3/5">
-          <CardContent className="content-center w-full">
+        <Card className="w-3/5 md:w-1/2 lg:w-3/5">
+          <CardContent className="content-center w-9/10">
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
               onMonthChange={setViewMonth}
               fixedWeeks
-              className="rounded-lg w-full [--cell-size:--spacing(8)] md:[--cell-size:--spacing(12))]"
+              className="rounded-lg w-full [--cell-size:--spacing(4)] md:[--cell-size:--spacing(3)] lg:[--cell-size:--spacing(0)]"
               classNames={{
                 caption_label: "text-xl font-semibold",
+                day: "h-16 w-full p-0 flex items-right justify-center",
               }}
               components={{
                 DayButton: ({ day, ...props }) => (
-                  <button {...props}>
+                  <button 
+                  {...props}
+                  >
                     <DayContent day={day.date} />
                   </button>
                 ),
