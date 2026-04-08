@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from 'next/navigation';
 import { Search, SlidersHorizontal, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import { ClubCardSearch, type ClubCardData } from "@/components/club-card-search
 const PAGE_SIZE = 9;
 
 export default function ClubsPage() {
+  const rounter = useRouter();
   const [clubs, setClubs] = useState<ClubCardData[] | null>(null);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -53,6 +55,14 @@ export default function ClubsPage() {
 
         {/* Search + Filters */}
         <div className="flex w-full max-w-xl items-center gap-3">
+          <Button 
+            variant="outline"
+            size="default"
+            className="gap-2 bg-white"
+            onClick={() => rounter.push('/clubs/create')}
+          >
+            Create Club
+          </Button>
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <Input
