@@ -25,12 +25,14 @@ export function ClubCardSearch({ club }: { club: ClubCardData }) {
     >
       <Card className="overflow-hidden py-0 gap-0 transition-shadow hover:shadow-md">
         <div className="relative h-36 w-full">
-          <Image
-            src={club.photoUrl}
-            alt={club.name}
-            fill
-            className="object-cover"
-          />
+          { club.photoUrl &&
+            <Image
+              src={club.photoUrl}
+              alt={club.name}
+              fill
+              className="object-cover"
+            />
+          }
         </div>
         <CardHeader className="pb-2">
           <CardTitle className="text-lg">{club.name}</CardTitle>

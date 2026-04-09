@@ -70,7 +70,7 @@ export default function CalendarPage() {
               (window.location.href = "/individual-club/${meeting.id}")
             }
             className="text-[10px] lg:text-[12px] px-1.5 py-0.5 rounded-full text-white text-center truncate max-w-[10ch]"
-            style={{ backgroundColor: getClubColor(meeting.club) }}
+            style={{ backgroundColor: getClubColor(meeting.tags) }}
             onMouseEnter={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               setHovered({ meeting, x: rect.left, y: rect.bottom });
